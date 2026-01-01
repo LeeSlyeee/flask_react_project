@@ -170,6 +170,33 @@ def upload_profile_image():
         
     return jsonify({"message": "업로드 실패"}), 500
 
+# 5-2. 프로필 정보(소개글) 수정
+@app.route('/api/profile/update', methods=['POST'])
+def update_profile():
+    data = request.get_json()
+    user_key = data.get('userKey')
+    description = data.get('description')
+
+    if not user_key:
+        return jsonify({"message": "User info required"}), 400
+    
+    try:
+        member = Member.query.get(user_key)
+        if not member:
+            return jsonify({"message": "User not found"}), 404
+        
+        # 소개글 업데이트
+        member.description = description
+        db.session.commit()
+        
+        return jsonify({
+            "message": "Profile updated",
+            "user": member.to_dict()
+        }), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": str(e)}), 500
+
 # 6. 게시물 관리 (조회 및 작성)
 @app.route('/api/posts', methods=['GET', 'POST'])
 def handle_posts():

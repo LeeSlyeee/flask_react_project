@@ -32,6 +32,10 @@ class Member(db.Model):
     # nullable=True: 프로필 사진은 없어도 가입이 가능하므로 빈 값을 허용합니다.
     profileImage = db.Column(db.String(255), nullable=True)
 
+    # description: 프로필 소개글 (Bio)
+    # nullable=True: 소개글은 비워둘 수 있습니다.
+    description = db.Column(db.String(500), nullable=True)
+
     # to_dict: 파이썬 객체(Member)를 딕셔너리(JSON) 형태로 변환해주는 함수
     # 프론트엔드로 데이터를 보낼 때는 반드시 JSON 포맷이어야 하기 때문에 이 함수가 필요합니다.
     # 주의: userPW(비밀번호)는 보안상 절대 포함하지 않습니다.
@@ -39,7 +43,8 @@ class Member(db.Model):
         return {
             'userKey': self.userKey,
             'userID': self.userID,
-            'profileImage': self.profileImage
+            'profileImage': self.profileImage,
+            'description': self.description or "" # None이면 빈 문자열 반환
         }
 
 # ==============================================================================

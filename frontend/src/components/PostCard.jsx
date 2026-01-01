@@ -330,6 +330,7 @@ const styles = {
   },
   actions: {
     padding: '12px 16px 8px',
+    textAlign: 'left',
   },
   btn: {
     padding: 0,
@@ -340,6 +341,7 @@ const styles = {
   content: {
     padding: '0 16px',
     fontSize: '14px',
+    textAlign: 'left',
   },
   likes: {
     fontWeight: 'bold',

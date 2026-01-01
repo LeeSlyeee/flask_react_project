@@ -44,6 +44,7 @@ function Profile({ userInfo: currentUser }) {
           }
       }
 
+
     } catch (err) {
       console.error("Failed to fetch profile", err);
     }
@@ -69,6 +70,39 @@ function Profile({ userInfo: currentUser }) {
         console.error("Upload failed", err);
         alert("업로드 실패");
     }
+  };
+
+  // ============================================================================
+  // 프로필 편집 (소개글 수정) 관련 상태 및 함수
+  // ============================================================================
+  const [isEditing, setIsEditing] = useState(false);
+  const [editDescription, setEditDescription] = useState("");
+
+  // 프로필 정보가 로드되면 description 상태도 초기화
+  useEffect(() => {
+      if (profileUser) {
+          setEditDescription(profileUser.description || "");
+      }
+  }, [profileUser]);
+
+  const handleSaveProfile = async () => {
+      try {
+          const res = await axios.post('http://127.0.0.1:5000/api/profile/update', {
+              userKey: currentUser.userKey,
+              description: editDescription
+          });
+          
+          alert("프로필이 수정되었습니다.");
+          setIsEditing(false);
+          // 변경된 내용 반영을 위해 profileUser 상태 업데이트
+          setProfileUser(prev => ({
+              ...prev,
+              description: editDescription
+          }));
+      } catch (err) {
+          console.error("Profile update failed", err);
+          alert("프로필 수정 실패");
+      }
   };
 
   // ============================================================================
@@ -133,7 +167,32 @@ function Profile({ userInfo: currentUser }) {
                 </div>
                 <div style={styles.bio}>
                     <strong>{userID}</strong>
-                    <p>Welcome to my profile!</p>
+                    {/* 소개글(Bio) 표시 및 수정 기능 */}
+                    {isEditing ? (
+                        <div style={{marginTop: '10px'}}>
+                            <textarea 
+                                value={editDescription} 
+                                onChange={(e) => setEditDescription(e.target.value)}
+                                style={styles.bioInput}
+                                placeholder="소개글을 입력해주세요."
+                                rows={3}
+                            />
+                            <div style={styles.editBtnGroup}>
+                                <button onClick={handleSaveProfile} style={styles.saveBtn}>저장</button>
+                                <button onClick={() => setIsEditing(false)} style={styles.cancelBtn}>취소</button>
+                            </div>
+                        </div>
+                    ) : (
+                        <>
+                            <p style={{whiteSpace: 'pre-wrap', margin: '10px 0'}}>{profileUser?.description || "Welcome to my profile!"}</p>
+                            {/* 내 프로필일 때만 '프로필 편집' 버튼 표시 */}
+                            {formatUsername(currentUser.userID) === userID && (
+                                <button onClick={() => setIsEditing(true)} style={styles.editProfileBtn}>
+                                    프로필 편집
+                                </button>
+                            )}
+                        </>
+                    )}
                 </div>
             </div>
         </div>
@@ -286,6 +345,48 @@ const styles = {
       gap: '20px',
       alignItems: 'center',
       marginTop: '20px'
+  },
+  // --- 프로필 편집 스타일 ---
+  bioInput: {
+      width: '100%',
+      padding: '10px',
+      marginBottom: '10px',
+      border: '1px solid #dbdbdb',
+      borderRadius: '3px',
+      resize: 'none',
+      fontFamily: 'inherit'
+  },
+  editBtnGroup: {
+      display: 'flex',
+      gap: '10px'
+  },
+  saveBtn: {
+      backgroundColor: '#0095F6',
+      color: '#fff',
+      border: 'none',
+      borderRadius: '4px',
+      padding: '5px 9px',
+      fontWeight: '600',
+      cursor: 'pointer'
+  },
+  cancelBtn: {
+      backgroundColor: 'transparent',
+      color: '#262626',
+      border: '1px solid #dbdbdb',
+      borderRadius: '4px',
+      padding: '5px 9px',
+      fontWeight: '600',
+      cursor: 'pointer'
+  },
+  editProfileBtn: {
+      backgroundColor: 'transparent',
+      border: '1px solid #dbdbdb',
+      borderRadius: '4px',
+      padding: '5px 9px',
+      fontWeight: '600',
+      cursor: 'pointer',
+      fontSize: '14px',
+      marginTop: '10px'
   }
 };
 

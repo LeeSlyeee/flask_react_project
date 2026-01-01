@@ -170,8 +170,9 @@ const styles = {
   modal: {
     backgroundColor: '#fff',
     borderRadius: '12px',
-    width: '750px', // 가로로 넓게 (이미지+글쓰기)
-    height: '500px',
+    width: '850px', // 가로 길이 늘림 (이미지 500px + 캡션 350px)
+    height: 'auto', // 높이 자동 (내부 콘텐츠에 맞춤)
+    maxHeight: '90vh',
     display: 'flex',
     flexDirection: 'column',
     overflow: 'hidden',
@@ -186,6 +187,7 @@ const styles = {
   body: {
     flex: 1,
     display: 'flex',
+    height: '500px', // 바디 높이 고정 (이미지 정사각형 유지를 위해)
   },
   uploadArea: {
       flex: 1,
@@ -212,11 +214,13 @@ const styles = {
       height: '100%',
   },
   imageSection: {
-      width: '60%',
+      width: '500px', // 정사각형 (500x500)
+      height: '500px',
       backgroundColor: '#000',
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
+      borderRight: '1px solid #DBDBDB',
   },
   previewImage: {
       maxWidth: '100%',
@@ -224,8 +228,7 @@ const styles = {
       objectFit: 'contain',
   },
   captionSection: {
-      width: '40%',
-      borderLeft: '1px solid #DBDBDB',
+      flex: 1, // 남은 공간 차지
       display: 'flex',
       flexDirection: 'column',
   },
@@ -247,6 +250,7 @@ const styles = {
       padding: '10px 16px',
       borderTop: '1px solid #DBDBDB',
       display: 'flex',
+      flexDirection: 'column',
       justifyContent: 'flex-end',
   },
   shareBtn: {
