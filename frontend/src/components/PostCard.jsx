@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { formatUsername } from '../utils';
+import ImageModal from './ImageModal';
 
 // ==============================================================================
 // 게시물 카드 컴포넌트 (PostCard)
@@ -29,6 +30,9 @@ function PostCard({ post, userInfo }) {
 
   // replyTarget: 현재 '대댓글'을 달고 있는 대상 정보 (null이면 일반 댓글 모드)
   const [replyTarget, setReplyTarget] = useState(null);
+
+  // 이미지 모달 상태
+  const [showImageModal, setShowImageModal] = useState(false);
 
   // ============================================================================
   // 이벤트 핸들러 (사용자 행동 처리)
@@ -161,9 +165,17 @@ function PostCard({ post, userInfo }) {
       <img 
         src={imageUrl} 
         alt="Post" 
-        style={styles.image} 
+        style={{...styles.image, cursor: 'pointer'}} 
+        onClick={() => setShowImageModal(true)}
         // 이미지가 깨지거나 없을 때 대체 이미지를 보여주는 트릭
         onError={(e) => { e.target.onerror = null; e.target.src = 'https://via.placeholder.com/470?text=Image+Not+Found'; }}
+      />
+      
+      {/* 이미지 모달 */}
+      <ImageModal 
+        isOpen={showImageModal} 
+        onClose={() => setShowImageModal(false)} 
+        imageSrc={imageUrl} 
       />
       
       {/* --- 액션 버튼들 (좋아요 등) --- */}
